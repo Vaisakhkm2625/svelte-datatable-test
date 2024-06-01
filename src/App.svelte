@@ -1,46 +1,40 @@
 <script>
-    import { DataHandler } from "@vincjo/datatables";
-    //import data from "$site/data/data";
-    import data from "./lib/people";
-    import Th from "./Th.svelte";
+    import { db } from "./lib/db";
+    import { liveQuery } from "dexie";
+    let name, age, email;
 
-    const handler = new DataHandler(data, { rowsPerPage: 100 });
-    const rows = handler.getRows();
-    const rowcount = handler.getRowCount();
+    function addItem() {
+        db.people.add({ name, age, email });
+    }
+    let lowerNamePattern = "a";
+
+    $: peopleList = liveQuery(async () => {
+        const coll = db.people
+            .where("name")
+            .startsWithIgnoreCase(lowerNamePattern);
+        return await coll.toArray();
+    });
 </script>
 
+<input type="text" id="name" bind:value={name} />
+<input type="text" id="age" bind:value={age} />
+<input type="text" id="email" bind:value={email} />
 
-{$rowcount.total}
+{name}
+{age}
+{email}
 
-<table>
-    <thead>
-        <tr>
-            <Th {handler} orderBy="first_name">First name</Th>
-            <Th {handler}>Last name</Th>
-            <Th {handler}>Email</Th>
-        </tr>
-    </thead>
-    <tbody>
-        {#each $rows as row}
-            <tr>
-                <td>{row.first_name}</td>
-                <td>{row.last_name}</td>
-                <td>{row.phone_number}</td>
-            </tr>
+<button on:click={addItem}> </button>
+
+<input type="text" bind:value={lowerNamePattern} />
+
+{#if $peopleList}
+    <ul>
+        {#each $peopleList as person}
+            <li>{person.name} - {person.age} - {person.email}</li>
         {/each}
-    </tbody>
-</table>
-
-<style>
-    table {
-        text-align: left;
-        border-collapse: separate;
-        border-spacing: 0;
-        width: 100%;
-    }
-    td,
-    th {
-        padding: 4px 20px;
-        border-bottom: 1px solid #eee;
-    }
-</style>
+    </ul>
+{:else}
+    <p>Loading data...</p>
+    {JSON.stringify($peopleList)}
+{/if}

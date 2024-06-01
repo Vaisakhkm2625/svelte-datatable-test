@@ -23,7 +23,7 @@ function generatePeople(num) {
     return people;
 }
 
-const numPeople = 20000;
+const numPeople = 1000000;
 const people = generatePeople(numPeople);
 
 // Convert the data to the specified format
@@ -37,8 +37,11 @@ const formattedData = people.map((person, index) => ({
 }));
 
 // Export the data
-const exportData = `export default ${JSON.stringify(formattedData, null, 4)}`;
+//const exportData = `export default ${JSON.stringify(formattedData, null, 4)}`;
+//fs.writeFileSync('src/lib/people.js', exportData);
 
-fs.writeFileSync('src/lib/people.js', exportData);
+fs.writeFileSync('test/people.json', JSON.stringify(formattedData, null, 4));
 
-console.log(`Generated ${numPeople} people and saved to people.js`);
+
+
+console.log(`Generated ${numPeople} people and saved to test/people.json`);
