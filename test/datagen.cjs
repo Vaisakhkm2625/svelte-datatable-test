@@ -23,22 +23,22 @@ function generatePeople(num) {
     return people;
 }
 
-const numPeople = 1000000;
+const numPeople = 10000;//1000000;
 const people = generatePeople(numPeople);
 
 // Convert the data to the specified format
 const formattedData = people.map((person, index) => ({
     id: person.id,
-    first_name: `'${person.first_name}'`,
-    last_name: `'${person.last_name}'`,
-    phone_number: `'${person.phone_number}'`,
+    first_name: `${person.first_name}`,
+    last_name: `${person.last_name}`,
+    phone_number: `${person.phone_number}`,
     location: person.location,
-    group_name: `'${person.group_name}'`
+    group_name: `${person.group_name}`
 }));
 
 // Export the data
-//const exportData = `export default ${JSON.stringify(formattedData, null, 4)}`;
-//fs.writeFileSync('src/lib/people.js', exportData);
+const exportData = `export default ${JSON.stringify(formattedData, null, 4)}`;
+fs.writeFileSync('src/lib/people.js', exportData);
 
 fs.writeFileSync('test/people.json', JSON.stringify(formattedData, null, 4));
 
