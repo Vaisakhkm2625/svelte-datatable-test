@@ -12,7 +12,7 @@ export let addData = () => {
     db.contacts.bulkAdd(people);
 }
 
-function loadJSONFile(url) {
+export function loadJSONFile(url) {
     return fetch(url)
         .then(response => response.json())
         .catch(error => console.error('Error loading JSON file:', error));

@@ -1,88 +1,31 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { db, addJSONData, addData, deleteData } from "./lib/db";
-    import { liveQuery } from "dexie";
-    let name, age, email;
+    import { loadJSONFile } from "./lib/db";
 
-    //function addItem() {
-    //    db.people.add({ name, age, email });
-    //}
-    let firstNameSearch = "a";
-    let lastNameSearch = "a";
+    let data = {};
+    let data1 = {};
 
-    let idstart = 1;
+    function getData() {
+        if (localStorage.getItem("testObject") === null) {
+            setData();
+        }
+        data = JSON.parse(localStorage.getItem("testObject"));
+    }
 
-    let rowsPerPage = 10;
+    function setData() {
+        console.log("fetching data...");
+        const jsonFileUrl = "http://localhost:5173/test/people.json";
 
-    $: peopleList = liveQuery(async () => {
-        const coll = db.contacts
-            .where("first_name")
-            .startsWithIgnoreCase(firstNameSearch)
-            //.and((person) => person.id <= idstart + rowsPerPage);
-            .and((person) =>
-                person.last_name.ignoreCase().startsWith(lastNameSearch),
-            );
+        loadJSONFile(jsonFileUrl).then((data) => {
+            localStorage.setItem("testObject", JSON.stringify(data));
+        });
+        data = JSON.parse(localStorage.getItem("testObject"));
+    }
 
-        //.or("last_name")
-        //.startsWithIgnoreCase(lowerNamePattern);
-        //.where("first_name")
-        //.startsWithIgnoreCase(lowerNamePattern)
-        return await coll.toArray();
+    onMount(() => {
+        setData();
     });
 </script>
 
-<!-- <input type="text" id="name" bind:value={name} />
-<input type="text" id="age" bind:value={age} />
-<input type="text" id="email" bind:value={email} />
-
-{name}
-{age}
-{email}
-
-<button on:click={addItem}> </button>
--->
-
-<button on:click={addJSONData}>Add data </button>
-<button on:click={deleteData}>Delete data </button>
-
-<button
-    on:click={() => {
-        idstart -= rowsPerPage;
-    }}
->
-    {"<"}
-</button>
-<button
-    on:click={() => {
-        idstart += rowsPerPage;
-    }}
->
-    >
-</button>
-
-<input type="text" bind:value={firstNameSearch} />
-<input type="text" bind:value={lastNameSearch} />
-
-<input type="text" id="rowsPerPage" bind:value={rowsPerPage} />
-
-<datalist id="rowsPerPage">
-    {#each [10, 20, 50, 100] as rp}
-        <option value={rp} />
-    {/each}
-</datalist>
-
-{#if $peopleList}
-    {$peopleList.length}
-    ({idstart + " - " + (idstart + rowsPerPage)})
-
-    <ul>
-        {#each $peopleList.slice(idstart, idstart + rowsPerPage) as person}
-            <li>
-                {person.first_name} - {person.last_name} - {person.phone_number}
-            </li>
-        {/each}
-    </ul>
-{:else}
-    <p>Loading data...</p>
-    {JSON.stringify($peopleList)}
-{/if}
+data: {JSON.stringify(data)}
+data1: {JSON.stringify(data1)}
