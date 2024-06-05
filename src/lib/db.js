@@ -1,5 +1,5 @@
 import Dexie from "dexie";
-import people from './people';
+//import people from './people';
 
 export const db = new Dexie("gcpDatabse");
 
