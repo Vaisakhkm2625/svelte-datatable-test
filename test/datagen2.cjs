@@ -69,7 +69,7 @@ function generatePeople(num, products, employees) {
 
 const products = generateHelperProducts(100);
 const employees = generateHelperEmployees(100);
-people = generatePeople(2000, products, employees);
+people = generatePeople(5, products, employees);
 
 // Export the data
 fs.writeFileSync('test/people.json', JSON.stringify(people, null, 4));
