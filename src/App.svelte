@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
     import { loadJSONFile } from "./lib/db";
 
-    let data = {};
+    let data = [];
     let data1 = {};
     let fetchdata = false;
 
@@ -18,8 +18,10 @@
         fetchdata = true;
         const jsonFileUrl = "http://localhost:5173/test/people.json";
 
-        loadJSONFile(jsonFileUrl).then((data) => {
-            localStorage.setItem("testObject", JSON.stringify(data));
+        loadJSONFile(jsonFileUrl).then((d) => {
+            console.log(d);
+            data1 = d;
+            localStorage.setItem("testObject", JSON.stringify(d));
         });
 
         data = JSON.parse(localStorage.getItem("testObject"));
@@ -27,7 +29,7 @@
 
     function removeData() {
         localStorage.removeItem("testObject");
-        data = {};
+        data = [];
     }
 
     onMount(() => {
@@ -40,11 +42,13 @@
 
 {fetchdata}
 
-<div style="display: flex;">
-    <div style="border: 1px solid #ff0000;">
-        data: {JSON.stringify(data)}
-    </div>
-    <div style="border: 1px solid #0000ff;">
-        data1: {JSON.stringify(data1)}
-    </div>
+<div class="container">
+    <div style="border: 1px soild red;">{JSON.stringify(data)}</div>
+    <div style="border: 1px soild red;">{JSON.stringify(data1)}</div>
 </div>
+
+<style>
+    .container {
+        display: flex;
+    }
+</style>
